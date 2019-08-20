@@ -27,34 +27,34 @@ cp --reflink /scratch/subvolume1/yes.txt /scratch/subvolume1/yes-copy.txt
 # all children of the argument to du (in this case, /scratch).  Notice 
 # that the "set shared" is only the size of the original yes.txt
 btrfs filesystem du /scratch
-     Total   Exclusive  Set shared  Filename
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
- 703.48MiB       0.00B           -  /scratch/subvolume1
- 703.48MiB       0.00B   351.74MiB  /scratch
+#     Total   Exclusive  Set shared  Filename
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
+# 703.48MiB       0.00B           -  /scratch/subvolume1
+# 703.48MiB       0.00B   351.74MiB  /scratch
 
 # check filesystem stats, may need to wait a while before running this
 # command to have up to date stats
 btrfs filesystem df /scratch  
-Data, single: total=840.00MiB, used=351.99MiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=264.00MiB, used=512.00KiB
-GlobalReserve, single: total=16.00MiB, used=0.00B
+#Data, single: total=840.00MiB, used=351.99MiB
+#System, single: total=4.00MiB, used=16.00KiB
+#Metadata, single: total=264.00MiB, used=512.00KiB
+#GlobalReserve, single: total=16.00MiB, used=0.00B
 
 # Notice that we get slightly differently stats from the host's df and du
 # commands
 df --human /scratch/
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/xvdb       8.0G  369M  7.4G   5% /scratch
+#Filesystem      Size  Used Avail Use% Mounted on
+#/dev/xvdb       8.0G  369M  7.4G   5% /scratch
 
 du --human --summarize /scratch/
-704M	/scratch/
+#704M	/scratch/
 
 # create (CoW) snapshot of subvolume1
-btrfs subvolume snapshot /scratch/subvolume1/ /scratch/subvolume2
+#btrfs subvolume snapshot /scratch/subvolume1/ /scratch/subvolume2
 
 ls /scratch/subvolume2
-yes-copy.txt  yes.txt
+#yes-copy.txt  yes.txt
 
 # (^C after a second, results in 158MB file)
 yes no > /scratch/subvolume2/no.txt
@@ -66,46 +66,46 @@ yes no > /scratch/subvolume2/no.txt
 # can see that it has a non-zero "exclusive" size, meaning that its 
 # data is not shared with any other files.
 btrfs filesystem du /scratch
-     Total   Exclusive  Set shared  Filename
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
- 703.48MiB       0.00B           -  /scratch/subvolume1
- 351.74MiB       0.00B           -  /scratch/subvolume2/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume2/yes-copy.txt
- 157.06MiB   157.06MiB           -  /scratch/subvolume2/no.txt
- 860.54MiB   157.06MiB           -  /scratch/subvolume2
-   1.53GiB   157.06MiB   351.74MiB  /scratch
+#     Total   Exclusive  Set shared  Filename
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
+# 703.48MiB       0.00B           -  /scratch/subvolume1
+# 351.74MiB       0.00B           -  /scratch/subvolume2/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume2/yes-copy.txt
+# 157.06MiB   157.06MiB           -  /scratch/subvolume2/no.txt
+# 860.54MiB   157.06MiB           -  /scratch/subvolume2
+#   1.53GiB   157.06MiB   351.74MiB  /scratch
 
 # create (CoW) snapshot of snapshot (subvolume2)
 btrfs subvolume snapshot /scratch/subvolume2/ /scratch/subvolume3
 
 ls /scratch/subvolume3
-no.txt  yes-copy.txt  yes.txt
+#no.txt  yes-copy.txt  yes.txt
 
 btrfs filesystem du /scratch
-     Total   Exclusive  Set shared  Filename
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
- 703.48MiB       0.00B           -  /scratch/subvolume1
- 351.74MiB       0.00B           -  /scratch/subvolume2/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume2/yes-copy.txt
- 157.06MiB       0.00B           -  /scratch/subvolume2/no.txt
- 860.54MiB       0.00B           -  /scratch/subvolume2
- 351.74MiB       0.00B           -  /scratch/subvolume3/yes.txt
- 351.74MiB       0.00B           -  /scratch/subvolume3/yes-copy.txt
- 157.06MiB       0.00B           -  /scratch/subvolume3/no.txt
- 860.54MiB       0.00B           -  /scratch/subvolume3
-   2.37GiB       0.00B   508.80MiB  /scratch
+#     Total   Exclusive  Set shared  Filename
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume1/yes-copy.txt
+# 703.48MiB       0.00B           -  /scratch/subvolume1
+# 351.74MiB       0.00B           -  /scratch/subvolume2/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume2/yes-copy.txt
+# 157.06MiB       0.00B           -  /scratch/subvolume2/no.txt
+# 860.54MiB       0.00B           -  /scratch/subvolume2
+# 351.74MiB       0.00B           -  /scratch/subvolume3/yes.txt
+# 351.74MiB       0.00B           -  /scratch/subvolume3/yes-copy.txt
+# 157.06MiB       0.00B           -  /scratch/subvolume3/no.txt
+# 860.54MiB       0.00B           -  /scratch/subvolume3
+#   2.37GiB       0.00B   508.80MiB  /scratch
 
 btrfs filesystem df /scratch
-Data, single: total=840.00MiB, used=509.06MiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=264.00MiB, used=704.00KiB
-GlobalReserve, single: total=16.00MiB, used=0.00B
+#Data, single: total=840.00MiB, used=509.06MiB
+#System, single: total=4.00MiB, used=16.00KiB
+#Metadata, single: total=264.00MiB, used=704.00KiB
+#GlobalReserve, single: total=16.00MiB, used=0.00B
 
 df --human /scratch/
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/xvdb       8.0G  526M  7.3G   7% /scratch
+#Filesystem      Size  Used Avail Use% Mounted on
+#/dev/xvdb       8.0G  526M  7.3G   7% /scratch
 
 du --human --summarize /scratch/
-2.4G	/scratch/
+#2.4G	/scratch/
