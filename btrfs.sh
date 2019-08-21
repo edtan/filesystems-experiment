@@ -23,6 +23,18 @@ yes > /scratch/subvolume1/yes.txt
 # you can pass the --reflink option to cp now make a CoW copy of the file
 cp --reflink /scratch/subvolume1/yes.txt /scratch/subvolume1/yes-copy.txt
 
+# notice the difference between the file layer view (ls) and
+# the block layer view (btrfs tools)
+ls -l --human-readable /scratch/subvolume1/
+#total 703M
+#-rw-rw-r-- 1 ubuntu ubuntu 352M Aug 20 18:29 yes-copy.txt
+#-rw-rw-r-- 1 ubuntu ubuntu 352M Aug 20 18:29 yes.txt
+
+sudo btrfs filesystem show /dev/xvdb
+#Label: none  uuid: 69e7407a-7bf2-4179-ac0e-ce342f091f54
+#	Total devices 1 FS bytes used 351.74MiB
+#	devid    1 size 8.00GiB used 1.08GiB path /dev/xvdb
+
 # check the disk space usage.  "Set shared" is the all the space shared by
 # all children of the argument to du (in this case, /scratch).  Notice 
 # that the "set shared" is only the size of the original yes.txt
@@ -41,7 +53,7 @@ btrfs filesystem df /scratch
 #Metadata, single: total=264.00MiB, used=512.00KiB
 #GlobalReserve, single: total=16.00MiB, used=0.00B
 
-# Notice that we get slightly differently stats from the host's df and du
+# Notice that we get slightly differently stats from the df and du
 # commands
 df --human /scratch/
 #Filesystem      Size  Used Avail Use% Mounted on
@@ -51,7 +63,7 @@ du --human --summarize /scratch/
 #704M	/scratch/
 
 # create (CoW) snapshot of subvolume1
-#btrfs subvolume snapshot /scratch/subvolume1/ /scratch/subvolume2
+btrfs subvolume snapshot /scratch/subvolume1/ /scratch/subvolume2
 
 ls /scratch/subvolume2
 #yes-copy.txt  yes.txt

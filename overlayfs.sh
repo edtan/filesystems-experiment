@@ -13,7 +13,6 @@ cd overlay-test
 # same set of files within a subdirectories of the lower and upper
 # directories to show what happens when directories are "merged" together
 # in OverlayFS
-echo "This is only-in-lower.txt in the lower dir" | tee lower/only-in-lower.txt lower/samedir/only-in-lower.txt
 echo "This is lower.txt in the lower dir" | tee lower/lower.txt lower/samedir/lower.txt
 echo "This is upper.txt in the upper dir" | tee upper/upper.txt upper/samedir/upper.txt
 echo "This is same.txt in the lower dir" | tee lower/same.txt lower/samedir/same.txt
@@ -24,10 +23,8 @@ tree
 #.
 #├── lower
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   └── same.txt
 #│   └── same.txt
 #├── overlay
@@ -50,18 +47,14 @@ tree
 #.
 #├── lower
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   └── same.txt
 #│   └── same.txt
 #├── overlay
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   ├── same.txt
 #│   │   └── upper.txt
 #│   ├── same.txt
@@ -110,7 +103,7 @@ ls
 #lower  overlay  overlay2  upper  upper2  workdir  workdir2
 
 # For good measure, let's create a new file in the new upper2 directory
-echo "This is upper2.txt in the upper2 dir" | tee upper2/upper2.txt
+echo "This is upper2.txt in the upper2 dir" > upper2/upper2.txt
 
 # Create the second OverlayFS mount, using the previous OverlayFS mount
 sudo mount -t overlay overlay -o lowerdir=overlay,upperdir=upper2,workdir=workdir2 overlay2
@@ -121,28 +114,22 @@ tree
 #.
 #├── lower
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   └── same.txt
 #│   └── same.txt
 #├── overlay
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   ├── same.txt
 #│   │   └── upper.txt
 #│   ├── same.txt
 #│   └── upper.txt
 #├── overlay2
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── samedir
 #│   │   ├── lower.txt
-#│   │   ├── only-in-lower.txt
 #│   │   ├── same.txt
 #│   │   └── upper.txt
 #│   ├── same.txt
@@ -176,10 +163,8 @@ tree
 #├── innerupper
 #├── innerworkdir
 #├── lower.txt
-#├── only-in-lower.txt
 #├── samedir
 #│   ├── lower.txt
-#│   ├── only-in-lower.txt
 #│   ├── same.txt
 #│   └── upper.txt
 #├── same.txt
@@ -211,10 +196,11 @@ df --human
 #overlay         111G  104G  916M 100% /home/user/overlay-test/overlay
 #overlay         111G  104G  916M 100% /home/user/overlay-test/overlay2
 
+cd ..
 sudo du --human --summarize *
-#32K	lower
-#56K	overlay
-#60K	overlay2
+#24K	lower
+#48K	overlay
+#52K	overlay2
 #40K	upper
 #4.0K	upper2
 #8.0K	workdir
